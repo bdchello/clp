@@ -1,6 +1,5 @@
 {
   "url": "https://github.com/catchorg/Catch2/archive/refs/tags/v2.13.7.zip",
-  "unzip": true,
   "targets": [
     {
       "source": "Catch2-2.13.7",

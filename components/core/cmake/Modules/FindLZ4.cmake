@@ -25,6 +25,7 @@ find_path(LZ4_INCLUDE_DIR lz4.h
         PATH_SUFFIXES include
         )
 
+message(STATUS "LZ4_INCLUDE_DIR:${LZ4_INCLUDE_DIR}")
 # Handle static libraries
 if(LZ4_USE_STATIC_LIBS)
     # Save current value of CMAKE_FIND_LIBRARY_SUFFIXES

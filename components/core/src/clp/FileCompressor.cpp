@@ -82,7 +82,7 @@ namespace clp {
     bool FileCompressor::compress_file (size_t target_data_size_of_dicts, streaming_archive::writer::Archive::UserConfig& archive_user_config,
                                         size_t target_encoded_file_size, const FileToCompress& file_to_compress,
                                         streaming_archive::writer::Archive& archive_writer, bool use_heuristic) {
-        std::string file_name = std::filesystem::canonical(file_to_compress.get_path()).string();
+        std::string file_name = boost::filesystem::canonical(file_to_compress.get_path()).string();
 
         PROFILER_SPDLOG_INFO("Start parsing {}", file_name)
         Profiler::start_continuous_measurement<Profiler::ContinuousMeasurementIndex::ParseLogFile>();

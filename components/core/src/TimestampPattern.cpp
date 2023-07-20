@@ -6,7 +6,7 @@
 #include <vector>
 
 // Date library
-#include <date/include/date/date.h>
+#include "../submodules/date/include/date/date.h"
 
 // Project headers
 #include "spdlog_with_specializations.hpp"

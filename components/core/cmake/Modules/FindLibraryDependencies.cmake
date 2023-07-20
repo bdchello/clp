@@ -8,7 +8,12 @@
 #   ${fld_PREFIX}_LIBRARY_DEPENDENCIES - Found libraries
 macro(FindStaticLibraryDependencies fld_LIBNAME fld_PREFIX fld_STATIC_LIBS)
     # NOTE: libc, libm, libpthread, and librt should be dynamically linked
-    set(fld_DYNAMIC_LIBS "c;m;pthread;rt")
+    if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+        set(fld_DYNAMIC_LIBS "c;m")
+    else()
+        set(fld_DYNAMIC_LIBS "c;m;pthread;rt")
+    endif()
+
 
     # Get absolute path of dependent libraries
     foreach(fld_DEP_LIB ${fld_STATIC_LIBS})

@@ -54,7 +54,7 @@ namespace compressor_frontend {
         SchemaParser sp;
         unique_ptr<SchemaFileAST> schema_ast = sp.generate_schema_ast(schema_reader);
         schema_reader.close();
-        schema_ast->m_file_path = std::filesystem::canonical(schema_reader.get_path()).string();
+        schema_ast->m_file_path = boost::filesystem::canonical(schema_reader.get_path()).string();
         return schema_ast;
     }
 

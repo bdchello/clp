@@ -6,13 +6,13 @@
 #include <utility>
 
 // Catch2
-#include <Catch2/single_include/catch2/catch.hpp>
+#include "../submodules/Catch2/single_include/catch2/catch.hpp"
 
 // Project headers
 #include "../src/clp/run.hpp"
 #include "../src/compressor_frontend/utils.hpp"
 #include "../src/compressor_frontend/LogParser.hpp"
-#include "../src/GlobalMySQLMetadataDB.hpp"
+// #include "../src/GlobalMySQLMetadataDB.hpp"
 
 using compressor_frontend::DelimiterStringAST;
 using compressor_frontend::LALR1Parser;

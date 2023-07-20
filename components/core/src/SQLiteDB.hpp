@@ -5,7 +5,7 @@
 #include <string>
 
 // sqlite3
-#include <sqlite3/sqlite3.h>
+#include "../submodules/sqlite3/sqlite3.h"
 
 // Project headers
 #include "ErrorCode.hpp"

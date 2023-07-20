@@ -10,7 +10,7 @@
 // Project headers
 #include "../ErrorCode.hpp"
 #include "../FileWriter.hpp"
-#include "../GlobalMySQLMetadataDB.hpp"
+// #include "../GlobalMySQLMetadataDB.hpp"
 #include "../GlobalSQLiteMetadataDB.hpp"
 #include "../spdlog_with_specializations.hpp"
 #include "../streaming_archive/reader/Archive.hpp"
@@ -48,13 +48,15 @@ namespace clp {
                     global_metadata_db = std::make_unique<GlobalSQLiteMetadataDB>(global_metadata_db_path.string());
                     break;
                 }
-                case GlobalMetadataDBConfig::MetadataDBType::MySQL:
-                    global_metadata_db = std::make_unique<GlobalMySQLMetadataDB>(global_metadata_db_config.get_metadata_db_host(),
-                                                                                 global_metadata_db_config.get_metadata_db_port(),
-                                                                                 global_metadata_db_config.get_metadata_db_username(),
-                                                                                 global_metadata_db_config.get_metadata_db_password(),
-                                                                                 global_metadata_db_config.get_metadata_db_name(),
-                                                                                 global_metadata_db_config.get_metadata_table_prefix());
+                // case GlobalMetadataDBConfig::MetadataDBType::MySQL:
+                //     global_metadata_db = std::make_unique<GlobalMySQLMetadataDB>(global_metadata_db_config.get_metadata_db_host(),
+                //                                                                  global_metadata_db_config.get_metadata_db_port(),
+                //                                                                  global_metadata_db_config.get_metadata_db_username(),
+                //                                                                  global_metadata_db_config.get_metadata_db_password(),
+                //                                                                  global_metadata_db_config.get_metadata_db_name(),
+                //                                                                  global_metadata_db_config.get_metadata_table_prefix());
+                //     break;
+                default:
                     break;
             }
 

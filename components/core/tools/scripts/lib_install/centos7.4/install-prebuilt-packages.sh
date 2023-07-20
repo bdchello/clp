@@ -3,7 +3,8 @@
 yum install -y \
   bzip2 \
   centos-release-scl \
-  java-11-openjdk \
+  gcc \
+  gcc-c++ \
   make \
   openssl-devel \
   openssl-static \
@@ -14,5 +15,5 @@ yum install -y \
 
 # Install packages from CentOS' software collections repository (centos-release-scl)
 yum install -y \
-  devtoolset-9 \
+  devtoolset-8 \
   rh-git227

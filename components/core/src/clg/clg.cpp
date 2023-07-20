@@ -3,7 +3,9 @@
 
 // C++ libraries
 #include <iostream>
-#include <filesystem>
+// #include <filesystem>
+#include <boost/filesystem.hpp>
+// #include <boost/filesystem/operations.hpp>
 
 // spdlog
 #include <spdlog/sinks/stdout_sinks.h>
@@ -12,7 +14,7 @@
 #include "../Defs.h"
 #include "../compressor_frontend/utils.hpp"
 #include "../Grep.hpp"
-#include "../GlobalMySQLMetadataDB.hpp"
+// #include "../GlobalMySQLMetadataDB.hpp"
 #include "../GlobalSQLiteMetadataDB.hpp"
 #include "../Profiler.hpp"
 #include "../spdlog_with_specializations.hpp"
@@ -358,7 +360,7 @@ int main (int argc, const char* argv[]) {
 
     // Validate archives directory
     struct stat archives_dir_stat = {};
-    auto archives_dir = std::filesystem::path(command_line_args.get_archives_dir());
+    auto archives_dir = boost::filesystem::path(command_line_args.get_archives_dir());
     if (0 != stat(archives_dir.c_str(), &archives_dir_stat)) {
         SPDLOG_ERROR("'{}' does not exist or cannot be accessed - {}.", archives_dir.c_str(), strerror(errno));
         return -1;
@@ -375,14 +377,14 @@ int main (int argc, const char* argv[]) {
             global_metadata_db = std::make_unique<GlobalSQLiteMetadataDB>(global_metadata_db_path.string());
             break;
         }
-        case GlobalMetadataDBConfig::MetadataDBType::MySQL:
-            global_metadata_db = std::make_unique<GlobalMySQLMetadataDB>(global_metadata_db_config.get_metadata_db_host(),
-                                                                         global_metadata_db_config.get_metadata_db_port(),
-                                                                         global_metadata_db_config.get_metadata_db_username(),
-                                                                         global_metadata_db_config.get_metadata_db_password(),
-                                                                         global_metadata_db_config.get_metadata_db_name(),
-                                                                         global_metadata_db_config.get_metadata_table_prefix());
-            break;
+        // case GlobalMetadataDBConfig::MetadataDBType::MySQL:
+        //     global_metadata_db = std::make_unique<GlobalMySQLMetadataDB>(global_metadata_db_config.get_metadata_db_host(),
+        //                                                                  global_metadata_db_config.get_metadata_db_port(),
+        //                                                                  global_metadata_db_config.get_metadata_db_username(),
+        //                                                                  global_metadata_db_config.get_metadata_db_password(),
+        //                                                                  global_metadata_db_config.get_metadata_db_name(),
+        //                                                                  global_metadata_db_config.get_metadata_table_prefix());
+        //     break;
     }
     global_metadata_db->open();
 
@@ -402,8 +404,8 @@ int main (int argc, const char* argv[]) {
     {
         archive_ix->get_id(archive_id);
         auto archive_path = archives_dir / archive_id;
-
-        if (false == std::filesystem::exists(archive_path)) {
+        
+        if (false == boost::filesystem::exists(archive_path.string())) {
             SPDLOG_WARN("Archive {} does not exist in '{}'.", archive_id, command_line_args.get_archives_dir());
             continue;
         }
@@ -416,12 +418,12 @@ int main (int argc, const char* argv[]) {
         // Generate lexer if schema file exists
         auto schema_file_path = archive_path / streaming_archive::cSchemaFileName;
         bool use_heuristic = true;
-        if (std::filesystem::exists(schema_file_path)) {
+        if (boost::filesystem::exists(schema_file_path.string())) {
             use_heuristic = false;
 
             char buf[max_map_schema_length];
             FileReader file_reader;
-            file_reader.try_open(schema_file_path);
+            file_reader.try_open(schema_file_path.string());
 
             size_t num_bytes_read;
             file_reader.read (buf, max_map_schema_length, num_bytes_read);
@@ -433,12 +435,12 @@ int main (int argc, const char* argv[]) {
                     // Create forward lexer
                     auto insert_result = forward_lexer_map.emplace(buf, compressor_frontend::lexers::ByteLexer());
                     forward_lexer_ptr = &insert_result.first->second;
-                    load_lexer_from_file(schema_file_path, false, *forward_lexer_ptr);
+                    load_lexer_from_file(schema_file_path.string(), false, *forward_lexer_ptr);
 
                     // Create reverse lexer
                     insert_result = reverse_lexer_map.emplace(buf, compressor_frontend::lexers::ByteLexer());
                     reverse_lexer_ptr = &insert_result.first->second;
-                    load_lexer_from_file(schema_file_path, true, *reverse_lexer_ptr);
+                    load_lexer_from_file(schema_file_path.string(), true, *reverse_lexer_ptr);
                 } else {
                     // load the lexers if they already exist
                     forward_lexer_ptr = &forward_lexer_map_it->second;
@@ -447,11 +449,11 @@ int main (int argc, const char* argv[]) {
             } else {
                 // Create forward lexer
                 forward_lexer_ptr = &one_time_use_forward_lexer;
-                load_lexer_from_file(schema_file_path, false, one_time_use_forward_lexer);
+                load_lexer_from_file(schema_file_path.string(), false, one_time_use_forward_lexer);
 
                 // Create reverse lexer
                 reverse_lexer_ptr = &one_time_use_reverse_lexer;
-                load_lexer_from_file(schema_file_path, false, one_time_use_reverse_lexer);
+                load_lexer_from_file(schema_file_path.string(), false, one_time_use_reverse_lexer);
             }
         }
 

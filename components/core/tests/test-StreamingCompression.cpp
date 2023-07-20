@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 
 // Catch2
-#include <Catch2/single_include/catch2/catch.hpp>
+#include "../submodules/Catch2/single_include/catch2/catch.hpp"
 
 // Zstd library
 #include <zstd.h>

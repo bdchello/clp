@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <boost/filesystem.hpp>
 
 // Boost libraries
 #include <boost/asio.hpp>
@@ -16,7 +17,7 @@
 #include <boost/uuid/uuid_io.hpp>
 
 // json
-#include <json/single_include/nlohmann/json.hpp>
+#include "../../../submodules/json/single_include/nlohmann/json.hpp"
 
 // Project headers
 #include "../../compressor_frontend/LogParser.hpp"
@@ -57,11 +58,9 @@ namespace streaming_archive::writer {
         m_creation_num = user_config.creation_num;
         m_print_archive_stats_progress = user_config.print_archive_stats_progress;
 
-        std::error_code std_error_code;
-
         // Ensure path doesn't already exist
-        std::filesystem::path archive_path = std::filesystem::path(user_config.output_dir) / m_id_as_string;
-        bool path_exists = std::filesystem::exists(archive_path, std_error_code);
+        boost::filesystem::path archive_path = boost::filesystem::path(user_config.output_dir) / m_id_as_string;
+        bool path_exists = boost::filesystem::exists(archive_path.string());
         if (path_exists) {
             SPDLOG_ERROR("Archive path already exists: {}", archive_path.c_str());
             throw OperationFailed(ErrorCode_Unsupported, __FILENAME__, __LINE__);
@@ -115,10 +114,10 @@ namespace streaming_archive::writer {
         /// TODO: add schema file size to m_stable_size???
         // Copy schema file into archive
         if (!m_schema_file_path.empty()) {
-            const std::filesystem::path archive_schema_filesystem_path = archive_path / cSchemaFileName;
+            const boost::filesystem::path archive_schema_filesystem_path = archive_path / cSchemaFileName;
             try {
-                const std::filesystem::path schema_filesystem_path = m_schema_file_path;
-                std::filesystem::copy(schema_filesystem_path, archive_schema_filesystem_path);
+                const boost::filesystem::path schema_filesystem_path = m_schema_file_path;
+                boost::filesystem::copy(schema_filesystem_path, archive_schema_filesystem_path);
             } catch (FileWriter::OperationFailed& e) {
                 SPDLOG_CRITICAL("Failed to copy schema file to archive: {}", archive_schema_filesystem_path.c_str());
                 throw;

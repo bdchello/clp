@@ -27,6 +27,8 @@ if(APPLE)
     set(ENV{CMAKE_PREFIX_PATH} "${libarchive_MACOS_PREFIX};$ENV{CMAKE_PREFIX_PATH}")
 endif()
 
+message(STATUS "lib${libarchive_LIBNAME} do find start")
+
 # Run pkg-config
 find_package(PkgConfig)
 pkg_check_modules(libarchive_PKGCONF QUIET "lib${libarchive_LIBNAME}")
@@ -58,14 +60,22 @@ if (LibArchive_LIBRARY)
 endif()
 
 if(LibArchive_USE_STATIC_LIBS)
-    FindStaticLibraryDependencies(${libarchive_LIBNAME} libarchive
-                                  "${libarchive_PKGCONF_STATIC_LIBRARIES}")
+    message(STATUS "libarchive_PKGCONF_STATIC_LIBRARIES:${libarchive_PKGCONF_STATIC_LIBRARIES}")
 
+    if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+        set(libarchive_PKGCONF_STATIC_LIBRARIES_ANDROID "archive;z")
+        FindStaticLibraryDependencies(${libarchive_LIBNAME} libarchive
+            "${libarchive_PKGCONF_STATIC_LIBRARIES_ANDROID}")
+    else()
+        FindStaticLibraryDependencies(${libarchive_LIBNAME} libarchive
+                                  "${libarchive_PKGCONF_STATIC_LIBRARIES}")
+    endif()
     # Restore original value of CMAKE_FIND_LIBRARY_SUFFIXES
     set(CMAKE_FIND_LIBRARY_SUFFIXES ${libarchive_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES})
     unset(libarchive_ORIG_CMAKE_FIND_LIBRARY_SUFFIXES)
 endif()
 
+message(STATUS "libarchive_DYNAMIC_LIBS:${libarchive_DYNAMIC_LIBS}")
 FindDynamicLibraryDependencies(libarchive "${libarchive_DYNAMIC_LIBS}")
 
 # Set version
@@ -119,3 +129,6 @@ if(APPLE)
     # remove LibArchive-specific path
     set(ENV{CMAKE_PREFIX_PATH} "$ENV{libarchive_PREV_CMAKE_PATH}")
 endif()
+
+
+message(STATUS "lib${libarchive_LIBNAME} do find end")

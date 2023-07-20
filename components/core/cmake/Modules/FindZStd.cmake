@@ -54,7 +54,11 @@ if(ZStd_USE_STATIC_LIBS)
 endif()
 
 # Add pthread manually since zstd's pkgconfig doesn't include it
-list(APPEND zstd_DYNAMIC_LIBS "pthread")
+if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+    message(STATUS "Cross complie Android")
+else()
+    list(APPEND zstd_DYNAMIC_LIBS "pthread")
+endif()
 
 FindDynamicLibraryDependencies(zstd "${zstd_DYNAMIC_LIBS}")
 
@@ -81,6 +85,7 @@ if(NOT TARGET ZStd::ZStd)
 
     # Set include directories for library
     if(ZStd_INCLUDE_DIR)
+        message(STATUS "ZStd_INCLUDE_DIR:${ZStd_INCLUDE_DIR}")
         set_target_properties(ZStd::ZStd
                 PROPERTIES
                 INTERFACE_INCLUDE_DIRECTORIES "${ZStd_INCLUDE_DIR}"
@@ -89,6 +94,7 @@ if(NOT TARGET ZStd::ZStd)
 
     # Set location of library
     if(EXISTS "${ZStd_LIBRARY}")
+        message(STATUS "ZStd_LIBRARY:${ZStd_LIBRARY}")
         set_target_properties(ZStd::ZStd
                 PROPERTIES
                 IMPORTED_LINK_INTERFACE_LANGUAGES "C"
@@ -97,6 +103,7 @@ if(NOT TARGET ZStd::ZStd)
 
         # Add component's dependencies for linking
         if(zstd_LIBRARY_DEPENDENCIES)
+            message(STATUS "zstd_LIBRARY_DEPENDENCIES:${zstd_LIBRARY_DEPENDENCIES}")
             set_target_properties(ZStd::ZStd
                     PROPERTIES
                     INTERFACE_LINK_LIBRARIES "${zstd_LIBRARY_DEPENDENCIES}"
